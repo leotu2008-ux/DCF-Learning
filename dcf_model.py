@@ -198,20 +198,42 @@ def print_report(inputs: DCFInputs, result: dict) -> None:
 
 
 def main():
-    # Example: a mid-size, moderately growing company.
-    # Replace these with a real company's numbers to value it.
+    # --- Case study: Apple Inc. (AAPL), base year = fiscal year 2025 ---
+    # (FY2025 ended 2025-09-27; figures from Apple's FY2025 10-K.)
+    #
+    #   Revenue:              $416.16B
+    #   Operating margin:     31.97% ($133.05B operating income / revenue)
+    #   Effective tax rate:   15.61% (unusually low — driven by foreign
+    #                         earnings mix, R&D credits, and stock comp
+    #                         benefits; worth treating as optimistic)
+    #   D&A:                  $11.70B  -> 2.81% of revenue
+    #   CapEx:                $12.72B  -> 3.06% of revenue
+    #   Net working capital:  Apple runs *negative* working capital (its
+    #                         suppliers effectively finance its inventory) —
+    #                         modeled here as -2% of revenue, so growth
+    #                         *releases* a little cash instead of consuming it
+    #   Net cash position:    ~$33.1B net cash (i.e. net_debt is negative)
+    #   Shares outstanding:   14,776M (~14.78B)
+    #
+    # Growth/discounting are analyst-style estimates, not disclosed by
+    # Apple, and are the most debatable numbers in the model:
+    #   Revenue growth:  decelerating from 6% to 4% over 5 years
+    #                     (Apple is a ~$400B+ revenue company; hyper-growth
+    #                     is behind it)
+    #   Discount rate:    8.5% WACC (large-cap, low-beta, minimal leverage)
+    #   Terminal growth:  2.5% (roughly long-run nominal GDP growth)
     inputs = DCFInputs(
-        revenue=1_000.0,               # $1,000M last year
-        ebit_margin=0.20,              # 20% operating margin
-        tax_rate=0.25,
-        d_and_a_pct_revenue=0.04,
-        capex_pct_revenue=0.05,
-        nwc_pct_revenue=0.10,
-        revenue_growth_rates=[0.10, 0.09, 0.08, 0.07, 0.06],  # 5-year forecast
-        discount_rate=0.09,            # 9% WACC
-        terminal_growth_rate=0.025,    # 2.5% long-run growth
-        net_debt=500.0,                # $500M net debt
-        shares_outstanding=100.0,      # 100M shares
+        revenue=416_160.0,             # $M
+        ebit_margin=0.3197,
+        tax_rate=0.1561,
+        d_and_a_pct_revenue=0.0281,
+        capex_pct_revenue=0.0306,
+        nwc_pct_revenue=-0.02,
+        revenue_growth_rates=[0.06, 0.06, 0.05, 0.05, 0.04],
+        discount_rate=0.085,
+        terminal_growth_rate=0.025,
+        net_debt=-33_100.0,             # negative = net cash
+        shares_outstanding=14_776.0,    # millions of shares
     )
 
     result = run_dcf(inputs)
